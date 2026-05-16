@@ -1,0 +1,18 @@
+{
+  "data_types": ["PDF"],
+  "data_volume": "50,000 legal contracts",
+  "update_frequency": "daily",
+  "languages": ["English", "French"],
+  "contains_tables": true,
+  "contains_images": false,
+  "avg_document_length": "long",
+  "use_case": "Lawyers querying specific clauses, obligations, and terms across a large corpus of legal contracts to support due diligence and contract review workflows",
+  "query_types": ["factual lookup", "comparison", "clause extraction"],
+  "expected_qps": "5/min",
+  "latency_requirement": "near-real-time",
+  "compliance_requirements": ["GDPR"],
+  "self_hosting_required": true,
+  "budget_tier": "enterprise",
+  "existing_infrastructure": ["on-prem Kubernetes"],
+  "team_ml_experience": "advanced"
+}

@@ -1,0 +1,18 @@
+{
+  "data_types": ["Markdown", "PDF"],
+  "data_volume": "500 documents, ~200MB",
+  "update_frequency": "static",
+  "languages": ["English"],
+  "contains_tables": false,
+  "contains_images": false,
+  "avg_document_length": "medium",
+  "use_case": "Employees asking questions about internal company processes, policies, and procedures via a chat interface",
+  "query_types": ["factual lookup", "procedure lookup"],
+  "expected_qps": "10/min",
+  "latency_requirement": "near-real-time",
+  "compliance_requirements": [],
+  "self_hosting_required": false,
+  "budget_tier": "startup",
+  "existing_infrastructure": ["AWS"],
+  "team_ml_experience": "basic"
+}

@@ -1,0 +1,68 @@
+{
+  "complexity": "simple",
+  "complexity_score": 2,
+  "estimated_build_time": "1-2 weeks",
+  "chunking_strategy": {
+    "choice": "Fixed-size chunking (512 tokens, 50-token overlap)",
+    "reasoning": "The corpus is static Markdown and PDF documents with medium-length pages and factual lookup queries. Fixed-size chunking is well-suited here — the documents have consistent structure and the queries are short and direct, so semantic chunking adds complexity without meaningful quality improvement.",
+    "alternatives": [
+      "Sentence-window chunking — better context preservation, slight overhead",
+      "Semantic chunking — overkill for this volume and query type"
+    ],
+    "config_notes": "Use 512-token chunks with 50-token overlap. Process PDFs with PyMuPDF. Strip headers/footers before chunking."
+  },
+  "embedding_model": {
+    "choice": "text-embedding-3-small (OpenAI)",
+    "reasoning": "Single-language English corpus, startup budget, AWS infrastructure. text-embedding-3-small gives strong retrieval quality at the lowest cost per token, and integrates natively with LlamaIndex. No need for multilingual or domain-specific models.",
+    "alternatives": [
+      "text-embedding-3-large — higher quality, 5x cost, unnecessary at this scale",
+      "BAAI/bge-small-en — free, self-hosted, slightly lower quality"
+    ],
+    "config_notes": "Dimension: 1536. Batch embed on ingest. Cache embeddings to avoid re-embedding unchanged docs."
+  },
+  "vector_database": {
+    "choice": "Pinecone (managed)",
+    "reasoning": "Static data, under 100k documents, no compliance constraints, AWS-hosted team, startup budget. Pinecone Starter tier handles this volume with zero infrastructure overhead and near-zero ops cost — the right choice for a team without ML ops experience.",
+    "alternatives": [
+      "Weaviate Cloud — more features, higher cost, unnecessary here",
+      "ChromaDB (local) — free for dev, not production-grade at scale"
+    ],
+    "config_notes": "Use Pinecone Starter (free tier covers 100k vectors). Create a single index with cosine similarity. Tag each vector with document_id and source metadata for filtered retrieval."
+  },
+  "retrieval_method": {
+    "choice": "Dense retrieval (semantic search only)",
+    "reasoning": "No structured data or tables in the corpus, query types are factual lookups from prose documents. Dense retrieval with good embeddings is sufficient. Hybrid BM25+dense adds operational overhead that isn't justified here.",
+    "alternatives": [
+      "Hybrid BM25 + dense — better keyword matching, only needed when corpus has structured content",
+      "Sparse-only BM25 — faster, worse semantic recall"
+    ],
+    "config_notes": "Top-k=5 for retrieval. Apply metadata filters on source type if needed. No reranker required at this QPS and complexity level."
+  },
+  "reranker": null,
+  "llm_for_generation": {
+    "choice": "claude-haiku-3-5 (Anthropic)",
+    "reasoning": "Internal KB Q&A requires accurate, grounded responses — not creative ones. Claude Haiku 3.5 offers strong instruction-following and citation quality at low cost, fitting a startup budget. For 10 QPS, latency is well within acceptable bounds.",
+    "alternatives": [
+      "claude-sonnet-4-6 — higher quality, 5x cost, justified only for complex reasoning tasks",
+      "GPT-4o-mini — comparable quality, OpenAI dependency"
+    ],
+    "config_notes": "System prompt: instruct model to answer only from retrieved context and cite sources. Set temperature=0 for factual consistency. Max output tokens: 512."
+  },
+  "eval_approach": {
+    "framework": "RAGAS",
+    "key_metrics": ["faithfulness", "answer_relevancy", "context_recall"],
+    "eval_dataset_guidance": "Create 50–100 Q&A pairs from the existing documentation by hand or with Claude. Include at least 10 questions where the answer is NOT in the docs (to test hallucination resistance). Run RAGAS after each major corpus update."
+  },
+  "architecture_summary": "This is a straightforward semantic search RAG pipeline suited to a static internal knowledge base. Documents are chunked at fixed size, embedded with text-embedding-3-small, and stored in Pinecone. At query time, the top 5 chunks are retrieved via dense search and passed to Claude Haiku for grounded answer generation. The stack is fully managed, requiring no ML ops expertise, and can be built and deployed in 1–2 weeks with a basic engineering team.",
+  "critical_risks": [
+    "Poor retrieval quality from inconsistently formatted documents — invest in a cleaning and normalisation step before chunking",
+    "Knowledge staleness — even 'static' corpora drift; build a re-ingestion trigger when docs are updated",
+    "Hallucination on out-of-scope questions — enforce strict grounding instructions in the system prompt and monitor for cases where the model answers without retrieved context"
+  ],
+  "quick_wins": [
+    "Stand up Pinecone index and ingest a sample of 50 documents to validate embedding quality before full ingest",
+    "Build a simple Streamlit or Slack-bot interface so employees can start using the tool within the first week",
+    "Run RAGAS on 20 hand-crafted Q&A pairs to establish a quality baseline before optimising"
+  ],
+  "pipeline_diagram": "User Query\n    |\n    v\n[Query Embedding]\n(text-embedding-3-small)\n    |\n    v\n[Vector Search]\n(Pinecone — dense, top-k=5)\n    |\n    v\n[Context Assembly]\n(top 5 chunks + metadata)\n    |\n    v\n[LLM Generation]\n(Claude Haiku 3.5 — grounded response)\n    |\n    v\nFinal Answer (with source citations)\n\nIngest Pipeline:\nDocs (PDF/MD) → Clean → Chunk (512 tok) → Embed → Pinecone Index"
+}

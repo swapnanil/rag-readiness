@@ -1,0 +1,18 @@
+{
+  "data_types": ["HTML", "Markdown", "Slack messages"],
+  "data_volume": "~10,000 documentation pages + continuous Slack history",
+  "update_frequency": "real-time",
+  "languages": ["English"],
+  "contains_tables": false,
+  "contains_images": false,
+  "avg_document_length": "short",
+  "use_case": "Automated first-line customer support chatbot that answers customer questions using product documentation and historical Slack support conversations",
+  "query_types": ["factual lookup", "troubleshooting", "how-to"],
+  "expected_qps": "200/sec",
+  "latency_requirement": "real-time",
+  "compliance_requirements": [],
+  "self_hosting_required": false,
+  "budget_tier": "growth",
+  "existing_infrastructure": ["GCP"],
+  "team_ml_experience": "basic"
+}
