@@ -118,6 +118,73 @@ def _format_data_description(data: dict) -> str:
     return "\n".join(lines)
 
 
+DIAGNOSIS_PROMPT = """You are a RAG debugging expert who has diagnosed hundreds of broken production RAG systems.
+Given an existing RAG stack and a list of observed problems reported by the engineering team,
+identify root causes component by component.
+
+Rules:
+- Severity must be grounded in the observed problems — do NOT hallucinate issues the team has not reported.
+- For each diagnosed issue, the fix must be specific and actionable.
+  Bad: "improve chunking". Good: "replace fixed-size chunking with parent-child hierarchical chunking with 512-token child nodes and full-clause parent nodes."
+- The quick_fix field must name ONE concrete change they can make today for the fastest improvement.
+- overall_severity is the maximum severity across all diagnosed issues.
+- recommended_actions must be ordered by impact (highest first).
+
+Respond ONLY with valid JSON matching the DiagnosisResult schema. No preamble, no markdown fences."""
+
+CROSS_CUTTING_PROMPT = """You are a RAG systems architect reviewing N architecture recommendations for different use cases within the same organisation.
+
+Given multiple architecture recommendations already generated, identify:
+1. shared_components: which components (vector DB, embedding model, etc.) could be shared across use cases
+2. conflicting_requirements: where use cases pull in opposite directions (e.g., one needs real-time, another needs on-prem static)
+3. recommended_build_order: which use case to build first and why (start with simplest / highest ROI)
+4. unified_stack_possible: whether a single tech stack can serve all use cases
+5. unified_stack_notes: explanation of why or why not
+
+Respond ONLY with valid JSON matching the CrossCuttingInsights schema. No preamble, no markdown fences."""
+
+IMPLEMENTATION_PROMPT = """You are a senior DevOps and ML engineer. Given a RAG architecture recommendation,
+generate the complete implementation bundle:
+
+1. requirements_txt: complete Python dependencies (pinned major versions), including the framework, vector DB client, embedding client, and evaluation library
+2. docker_compose_yml: docker-compose.yml as a string, matching the recommended stack exactly
+3. env_example: .env.example with all required environment variables and placeholder values
+4. migration_guide: if an existing_architecture is provided, generate ordered steps to migrate from current to recommended, including rollback notes. Otherwise null.
+5. quickstart_steps: ordered numbered steps for a developer to get the system running from scratch
+
+All file content fields are plain strings (the file content itself, not base64 or JSON-encoded).
+Respond ONLY with valid JSON. No preamble, no markdown fences."""
+
+REFINEMENT_PROMPT = """You are a senior RAG architect refining a previous architecture recommendation based on new feedback.
+
+Given:
+- The original data description
+- The previous architecture recommendation
+- User feedback on what failed or changed
+- Any updated constraints
+
+Generate a revised RAGArchitecture. For each component that changes, explicitly address the feedback in the reasoning field.
+If a component does not change, keep it identical to the previous recommendation.
+
+Respond ONLY with valid JSON matching the RAGArchitecture schema. No preamble, no markdown fences."""
+
+EVAL_DATASET_PROMPT = """You are a RAG evaluation engineer who builds test sets for retrieval quality assessment.
+
+Given a use case description and a RAG architecture recommendation, generate N evaluation questions
+that test the retrieval quality for this specific use case.
+
+Requirements:
+- Questions must be grounded in the actual data type and query patterns described — no generic questions.
+- Difficulty distribution: ~40% easy, ~40% medium, ~20% hard.
+- Each question must map to a specific RAGAS metric category: context_precision, context_recall, faithfulness, answer_relevancy.
+- retrieval_hint: describe what chunk content should contain the answer (helps annotators).
+- expected_answer_type: be specific — e.g. "exact clause text", "yes/no with justification", "dollar amount", "list of items".
+- ragas_config: a ready-to-use RAGAS testset config dict matching RAGAS v0.1 format.
+- annotation_guide: practical instructions for a human annotator to build ground-truth answers for these questions.
+- estimated_annotation_hours: realistic estimate for one annotator to label all questions.
+
+Respond ONLY with valid JSON matching the EvalDataset schema. No preamble, no markdown fences."""
+
 DECISION_RULES = [
     "Static data + <100k documents + no compliance constraints → Pinecone managed, simple",
     "Self-hosting required → Weaviate or Qdrant",

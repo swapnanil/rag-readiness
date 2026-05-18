@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Literal
+from datetime import datetime
+from typing import Any, Literal
 
 from pydantic import BaseModel, field_validator
 
@@ -117,3 +118,137 @@ class RAGArchitecture(BaseModel):
 class ConflictWarning(BaseModel):
     conflicts: list[str]
     recommendation: str
+
+
+# ── Feature 1: Architecture Diagnosis ──────────────────────────────────────
+
+class ExistingArchitecture(BaseModel):
+    vector_database: str
+    chunking_strategy: str
+    embedding_model: str
+    retrieval_method: str
+    reranker: str | None = None
+    llm: str = "gpt-4"
+    observed_problems: list[str]
+
+
+class DiagnosedIssue(BaseModel):
+    component: str
+    problem: str
+    severity: Literal["low", "medium", "high", "critical"]
+    fix: str
+
+
+class DiagnosisInput(BaseModel):
+    existing_architecture: ExistingArchitecture
+    data_description: DataDescription
+
+
+class DiagnosisResult(BaseModel):
+    diagnosed_issues: list[DiagnosedIssue]
+    root_cause_summary: str
+    overall_severity: Literal["low", "medium", "high", "critical"]
+    recommended_actions: list[str]
+    quick_fix: str
+
+
+# ── Feature 2: Multi-Use-Case Session ──────────────────────────────────────
+
+class MultiAuditRequest(BaseModel):
+    use_cases: list[DataDescription]
+    organization_name: str | None = None
+
+    @field_validator("use_cases")
+    @classmethod
+    def validate_use_case_count(cls, v: list) -> list:
+        if len(v) < 2:
+            raise ValueError("multi-audit requires at least 2 use cases")
+        if len(v) > 5:
+            raise ValueError("multi-audit supports up to 5 use cases per session")
+        return v
+
+
+class CrossCuttingInsights(BaseModel):
+    shared_components: list[str]
+    conflicting_requirements: list[str]
+    recommended_build_order: list[str]
+    unified_stack_possible: bool
+    unified_stack_notes: str
+
+
+class MultiAuditResult(BaseModel):
+    architectures: list[RAGArchitecture]
+    cross_cutting_insights: CrossCuttingInsights
+    session_id: str
+
+
+# ── Feature 3: Implementation Output ───────────────────────────────────────
+
+class ImplementationBundle(BaseModel):
+    architecture: RAGArchitecture
+    requirements_txt: str
+    docker_compose_yml: str
+    env_example: str
+    migration_guide: str | None
+    quickstart_steps: list[str]
+    session_id: str
+
+
+# ── Feature 4: Iterative Refinement ────────────────────────────────────────
+
+class RefinementRecord(BaseModel):
+    feedback: str
+    constraint_changes: dict[str, Any]
+    previous_architecture: RAGArchitecture
+    refined_at: datetime
+
+
+class AuditSession(BaseModel):
+    id: str
+    created_at: datetime
+    updated_at: datetime
+    data_description: DataDescription
+    architecture: RAGArchitecture
+    refinement_count: int = 0
+    refinement_history: list[RefinementRecord] = []
+
+
+class RefinementRequest(BaseModel):
+    feedback: str
+    constraint_changes: dict[str, Any] = {}
+
+
+# ── Feature 5: Cost Estimation ─────────────────────────────────────────────
+
+class CostItem(BaseModel):
+    component: str
+    choice: str
+    monthly_low_usd: int
+    monthly_high_usd: int
+    notes: str
+
+
+class CostEstimate(BaseModel):
+    monthly_low_usd: int
+    monthly_high_usd: int
+    breakdown: list[CostItem]
+    cost_drivers: list[str]
+    optimization_tips: list[str]
+    hosting_model: Literal["managed", "self-hosted", "hybrid"]
+
+
+# ── Feature 6: Eval Dataset ────────────────────────────────────────────────
+
+class EvalQuestion(BaseModel):
+    question: str
+    expected_answer_type: str
+    difficulty: Literal["easy", "medium", "hard"]
+    retrieval_hint: str
+    ragas_category: str
+
+
+class EvalDataset(BaseModel):
+    questions: list[EvalQuestion]
+    ragas_config: dict
+    annotation_guide: str
+    estimated_annotation_hours: float

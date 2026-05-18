@@ -1,0 +1,45 @@
+{
+  "monthly_low_usd": 185,
+  "monthly_high_usd": 830,
+  "hosting_model": "self-hosted",
+  "breakdown": [
+    {
+      "component": "Vector Database",
+      "choice": "Qdrant self-hosted",
+      "monthly_low_usd": 60,
+      "monthly_high_usd": 250,
+      "notes": "EC2/GCE compute cost — t3.large to m5.xlarge depending on index size"
+    },
+    {
+      "component": "Embedding",
+      "choice": "text-embedding-3-small",
+      "monthly_low_usd": 25,
+      "monthly_high_usd": 80,
+      "notes": "API pricing ~$0.02/1M tokens; 15GB legal corpus re-indexed monthly"
+    },
+    {
+      "component": "Reranker",
+      "choice": "BGE-reranker-large",
+      "monthly_low_usd": 40,
+      "monthly_high_usd": 180,
+      "notes": "self-hosted inference — required for legal precision requirements"
+    },
+    {
+      "component": "LLM",
+      "choice": "claude-sonnet-4-6",
+      "monthly_low_usd": 60,
+      "monthly_high_usd": 320,
+      "notes": "LLM API calls — depends heavily on query volume and context window usage"
+    }
+  ],
+  "cost_drivers": [
+    "Vector DB (Qdrant self-hosted): $60–$250/mo — compute scales with index size",
+    "LLM API calls: $60–$320/mo — legal queries tend to use large context windows",
+    "Reranker (BGE-reranker-large): $40–$180/mo — self-hosted GPU inference"
+  ],
+  "optimization_tips": [
+    "Use spot/preemptible instances for Qdrant if uptime SLA allows brief interruptions",
+    "Cache embeddings for frequently re-queried contracts — most due diligence queries repeat",
+    "Batch reranker inference during off-peak hours for non-urgent document review workflows"
+  ]
+}

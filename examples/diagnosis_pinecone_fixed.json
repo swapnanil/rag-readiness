@@ -1,0 +1,30 @@
+{
+  "existing_architecture": {
+    "vector_database": "Pinecone",
+    "chunking_strategy": "512-token fixed chunks, no overlap",
+    "embedding_model": "OpenAI ada-002",
+    "retrieval_method": "dense only",
+    "reranker": null,
+    "llm": "gpt-4",
+    "observed_problems": [
+      "misses exact clause references — searches for 'liability cap' return irrelevant chunks",
+      "hallucinates contract terms not present in retrieved context",
+      "can't find specific dollar amounts like '$2.5M indemnification limit'",
+      "multi-hop queries (find all clauses related to both IP and confidentiality) fail entirely"
+    ]
+  },
+  "data_description": {
+    "data_types": ["legal contracts", "NDA agreements", "SaaS terms"],
+    "data_volume": "15GB",
+    "update_frequency": "static",
+    "languages": ["English"],
+    "contains_tables": true,
+    "contains_images": false,
+    "avg_document_length": "long",
+    "use_case": "Search and retrieve specific legal clauses from enterprise contracts for review and due diligence",
+    "query_types": ["exact clause lookup", "liability search", "compliance check", "cross-contract comparison"],
+    "compliance_requirements": ["GDPR", "attorney-client privilege"],
+    "self_hosting_required": true,
+    "budget_tier": "growth"
+  }
+}

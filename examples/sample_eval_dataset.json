@@ -1,0 +1,87 @@
+{
+  "questions": [
+    {
+      "question": "What is the maximum liability cap stated in the Master Service Agreement?",
+      "expected_answer_type": "dollar amount",
+      "difficulty": "easy",
+      "retrieval_hint": "Chunk containing 'liability cap', 'maximum liability', or 'aggregate liability' clause with a dollar figure",
+      "ragas_category": "faithfulness"
+    },
+    {
+      "question": "Under what conditions can either party terminate the agreement for convenience?",
+      "expected_answer_type": "list of conditions with notice period",
+      "difficulty": "easy",
+      "retrieval_hint": "Termination clause section — look for 'terminate for convenience', '30-day notice', or 'written notice' language",
+      "ragas_category": "context_recall"
+    },
+    {
+      "question": "Does the indemnification clause cover third-party intellectual property claims?",
+      "expected_answer_type": "yes/no with supporting clause text",
+      "difficulty": "medium",
+      "retrieval_hint": "Indemnification section — look for 'third-party claims', 'IP infringement', or 'intellectual property' within indemnification scope",
+      "ragas_category": "faithfulness"
+    },
+    {
+      "question": "What data processing obligations does the vendor have under the GDPR addendum?",
+      "expected_answer_type": "list of obligations",
+      "difficulty": "medium",
+      "retrieval_hint": "GDPR Data Processing Agreement addendum — look for 'data processor obligations', 'sub-processor', 'data subject rights'",
+      "ragas_category": "context_recall"
+    },
+    {
+      "question": "If there is a conflict between the Master Agreement and a Statement of Work, which document governs?",
+      "expected_answer_type": "document name with governing clause reference",
+      "difficulty": "medium",
+      "retrieval_hint": "Order of precedence clause — look for 'conflict', 'governs', 'order of precedence', 'notwithstanding'",
+      "ragas_category": "context_precision"
+    },
+    {
+      "question": "What are the SLA uptime guarantees and the corresponding service credits for downtime?",
+      "expected_answer_type": "uptime percentage + credit table or formula",
+      "difficulty": "medium",
+      "retrieval_hint": "SLA exhibit or Schedule — look for uptime percentage, 'service credit', 'downtime', 'remedies'",
+      "ragas_category": "faithfulness"
+    },
+    {
+      "question": "Which jurisdictions' laws govern disputes arising under this agreement?",
+      "expected_answer_type": "jurisdiction name(s)",
+      "difficulty": "easy",
+      "retrieval_hint": "Governing law clause — look for 'governed by the laws of', 'jurisdiction', 'venue'",
+      "ragas_category": "answer_relevancy"
+    },
+    {
+      "question": "Under what circumstances can the customer audit the vendor's security controls, and how much notice is required?",
+      "expected_answer_type": "conditions + notice period in days",
+      "difficulty": "hard",
+      "retrieval_hint": "Security or audit rights clause — look for 'right to audit', 'security assessment', 'advance written notice'",
+      "ragas_category": "context_precision"
+    },
+    {
+      "question": "Are there any restrictions on the vendor assigning this agreement to a third party after an acquisition?",
+      "expected_answer_type": "yes/no with conditions, including M&A carve-out if present",
+      "difficulty": "hard",
+      "retrieval_hint": "Assignment clause — look for 'assign', 'change of control', 'merger or acquisition', 'prior written consent'",
+      "ragas_category": "faithfulness"
+    },
+    {
+      "question": "What is the auto-renewal policy and the opt-out window to prevent automatic renewal?",
+      "expected_answer_type": "renewal period + opt-out deadline window in days",
+      "difficulty": "medium",
+      "retrieval_hint": "Renewal or subscription term clause — look for 'auto-renew', 'renewal notice', 'written notice of non-renewal'",
+      "ragas_category": "answer_relevancy"
+    }
+  ],
+  "ragas_config": {
+    "testset_size": 10,
+    "distributions": {
+      "simple": 0.4,
+      "reasoning": 0.4,
+      "multi_context": 0.2
+    },
+    "llm": "claude-sonnet-4-6",
+    "embeddings": "text-embedding-3-small",
+    "critic_llm": "claude-sonnet-4-6"
+  },
+  "annotation_guide": "For each question: (1) identify the relevant contract section by name, (2) copy the verbatim clause text as ground truth, (3) write the expected answer in the format specified by expected_answer_type, (4) mark the specific sentences that support the answer for context_precision evaluation. For yes/no questions, always include the supporting clause text. For dollar amounts, include the exact figure and the clause it appears in.",
+  "estimated_annotation_hours": 3.5
+}

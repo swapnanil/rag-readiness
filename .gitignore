@@ -26,8 +26,12 @@ htmlcov/
 # Outputs
 outputs/
 
-# Spec doc
+# Spec docs
 spec-rag-readiness.md
+spec-rag-readiness-v2.md
+
+# SQLite databases
+*.db
 
 # IDE
 .vscode/

@@ -1,0 +1,48 @@
+{
+  "organization_name": "LexVault Legal AI",
+  "use_cases": [
+    {
+      "data_types": ["NDAs", "MSAs", "SaaS agreements"],
+      "data_volume": "15GB",
+      "update_frequency": "static",
+      "languages": ["English"],
+      "contains_tables": true,
+      "contains_images": false,
+      "avg_document_length": "long",
+      "use_case": "Search and retrieve specific legal clauses from enterprise contracts for due diligence and review",
+      "query_types": ["exact clause lookup", "liability search", "compliance check"],
+      "compliance_requirements": ["GDPR", "attorney-client privilege"],
+      "self_hosting_required": true,
+      "budget_tier": "growth"
+    },
+    {
+      "data_types": ["case law", "statutes", "regulatory guidance"],
+      "data_volume": "50GB",
+      "update_frequency": "daily",
+      "languages": ["English"],
+      "contains_tables": false,
+      "contains_images": false,
+      "avg_document_length": "long",
+      "use_case": "Search case law and regulatory documents to find precedents relevant to client matters",
+      "query_types": ["precedent search", "statute lookup", "regulatory cross-reference"],
+      "compliance_requirements": ["attorney-client privilege"],
+      "self_hosting_required": true,
+      "budget_tier": "growth"
+    },
+    {
+      "data_types": ["internal memos", "email threads", "meeting notes"],
+      "data_volume": "2GB",
+      "update_frequency": "real-time",
+      "languages": ["English"],
+      "contains_tables": false,
+      "contains_images": false,
+      "avg_document_length": "short",
+      "use_case": "Answer attorney questions about active matter status from internal correspondence and notes",
+      "query_types": ["factual lookup", "timeline reconstruction", "status check"],
+      "latency_requirement": "near-real-time",
+      "compliance_requirements": ["attorney-client privilege"],
+      "self_hosting_required": true,
+      "budget_tier": "growth"
+    }
+  ]
+}

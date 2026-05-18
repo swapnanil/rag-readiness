@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RAG Readiness — llm-tools by Swapnanil Saha</title>
-  <meta name="description" content="Describe your data and use case. Get a complete, opinionated RAG architecture — one recommendation per component, with reasoning.">
-  <meta property="og:title" content="RAG Readiness">
-  <meta property="og:description" content="Describe your data and use case. Get a complete, opinionated RAG architecture — one recommendation per component, with reasoning.">
+  <title>RAG Readiness v2 — llm-tools by Swapnanil Saha</title>
+  <meta name="description" content="Opinionated RAG architecture recommendations — plus architecture diagnosis, multi-use-case sessions, implementation bundles, cost estimation, and RAGAS eval dataset generation.">
+  <meta property="og:title" content="RAG Readiness v2">
+  <meta property="og:description" content="Opinionated RAG architecture recommendations — plus architecture diagnosis, multi-use-case sessions, implementation bundles, cost estimation, and RAGAS eval dataset generation.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -209,7 +209,7 @@
         <div class="hero-left">
           <div class="tool-badge">AI Architecture · RAG</div>
           <h1 class="hero-title">RAG<br><span class="accent">Readiness</span></h1>
-          <p class="hero-desc">"Describe your data and use case. Get a complete, opinionated RAG architecture — one recommendation per component, with reasoning."</p>
+          <p class="hero-desc">Describe your data and use case. Get a complete, opinionated RAG architecture. Diagnose what's wrong with the one you already have. Estimate what it'll cost.</p>
           <div class="btn-group">
             <a href="https://github.com/swapnanil/rag-readiness" target="_blank" class="btn-primary">View on GitHub</a>
             <a href="https://github.com/swapnanil/rag-readiness#api-usage" target="_blank" class="btn-secondary">Read the Docs</a>
@@ -221,26 +221,29 @@
             <div class="terminal-bar">
               <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
             </div>
-            <pre><span class="t-prompt">$</span> <span class="t-cmd">docker-compose run --rm -it cli audit</span> \
-  <span class="t-flag">--interactive</span>
+            <pre><span class="t-prompt">$</span> <span class="t-cmd">python main.py diagnose</span> <span class="t-flag">--interactive</span>
 
-<span class="t-cmt"># 7-question guided mode…</span>
-<span class="t-cmt"># Pre-scorer: complexity 8/10</span>
+<span class="t-cmt">[1/5] Vector database? </span><span class="t-str">Pinecone</span>
+<span class="t-cmt">[2/5] Chunking strategy? </span><span class="t-str">512-token fixed</span>
+<span class="t-cmt">[3/5] Embedding model? </span><span class="t-str">ada-002</span>
+<span class="t-cmt">[4/5] Retrieval method? </span><span class="t-str">dense only</span>
+<span class="t-cmt">[5/5] Problems? (blank to finish)</span>
+<span class="t-str">> misses exact clause references</span>
+<span class="t-str">> hallucinates contract terms</span>
+<span class="t-str">></span>
 
-<span class="t-head">## RAG Architecture Recommendation</span>
-<span class="t-key">vector_database</span><span class="t-muted">:</span>
-  <span class="t-str">Weaviate (self-hosted)</span>
-  <span class="t-dim">GDPR + self-hosting rules out</span>
-  <span class="t-dim">all managed options</span>
+<span class="t-head">Diagnosis — overall severity: CRITICAL</span>
+<span class="t-key">chunking_strategy</span><span class="t-muted">:</span> <span class="t-sev">critical</span>
+  <span class="t-dim">Fixed chunks split mid-clause</span>
+  <span class="t-str">→ switch to hierarchical chunking</span>
 
-<span class="t-key">retrieval_method</span><span class="t-muted">:</span>
-  <span class="t-str">Hybrid BM25 + dense + RRF</span>
-  <span class="t-dim">legal queries mix exact clause</span>
-  <span class="t-dim">keywords with semantic intent</span>
+<span class="t-key">retrieval_method</span><span class="t-muted">:</span> <span class="t-sev">high</span>
+  <span class="t-dim">Dense-only misses exact terms</span>
+  <span class="t-str">→ add BM25 hybrid + RRF merge</span>
 
-<span class="t-head">Pipeline</span>
-<span class="t-dim">PDF → chunk → embed → Weaviate</span>
-<span class="t-dim">→ hybrid retrieve → Claude</span></pre>
+<span class="t-head">Quick fix today:</span>
+<span class="t-dim">Enable 10% token overlap in</span>
+<span class="t-dim">fixed chunks as immediate patch</span></pre>
           </div>
         </div>
       </div>
@@ -255,10 +258,10 @@
       <div class="problem-grid reveal">
         <div class="problem-left">
           <div class="section-tag">Problem</div>
-          <p class="problem-statement">Every RAG architecture blog post ends with "it depends." Teams spend weeks evaluating vector databases without a framework for why one fits their constraints. The result: wrong choices discovered in production — after ingesting 50,000 documents and signing a cloud contract that violates GDPR.</p>
+          <p class="problem-statement">Every RAG architecture blog post ends with "it depends." Teams spend weeks evaluating options with no framework, ship the wrong choices, then discover root causes six months later — after ingesting 50,000 documents, signing a cloud contract that violates GDPR, and watching precision tank on exact-term queries.</p>
         </div>
         <div class="problem-right">
-          <p class="problem-solution">RAG Readiness pre-scores your data complexity from rules before making any LLM call, then Claude applies architecture heuristics to return one specific recommendation per component — not a comparison table. Weaviate or Pinecone. BM25 or dense. One answer, with the reasoning to defend it in a design review.</p>
+          <p class="problem-solution">RAG Readiness pre-scores complexity from rules, then Claude returns one specific recommendation per component. If you already have a stack, diagnose it — root causes ordered by severity, one concrete fix each. If you need to iterate, every session persists so you can refine against new constraints. Cost estimation, eval dataset generation, and implementation bundles included.</p>
         </div>
       </div>
     </div>
@@ -278,22 +281,22 @@
         <div class="arch-step reveal">
           <div class="arch-num"><div class="arch-dot"></div>01</div>
           <div class="arch-label">Describe</div>
-          <div class="arch-desc">Data types, volume, update frequency, compliance requirements, self-hosting preference, team ML experience</div>
+          <div class="arch-desc">Data types, volume, update frequency, compliance requirements, self-hosting preference, team ML experience — or share an existing broken stack for diagnosis</div>
         </div>
         <div class="arch-step reveal">
           <div class="arch-num"><div class="arch-dot"></div>02</div>
           <div class="arch-label">Score</div>
-          <div class="arch-desc">Pre-scorer computes complexity 1–10 from rule-based heuristics before any LLM call is made</div>
+          <div class="arch-desc">Rule-based pre-scorer computes complexity 1–10 before any LLM call; conflict detection flags contradictory constraints</div>
         </div>
         <div class="arch-step reveal">
           <div class="arch-num"><div class="arch-dot"></div>03</div>
           <div class="arch-label">Recommend</div>
-          <div class="arch-desc">Claude applies architecture heuristics and returns one primary choice per component with full reasoning</div>
+          <div class="arch-desc">Claude returns one specific choice per component with full reasoning — plus diagnosis severity, cost estimate, or eval questions depending on mode</div>
         </div>
         <div class="arch-step reveal">
           <div class="arch-num"><div class="arch-dot"></div>04</div>
-          <div class="arch-label">Output</div>
-          <div class="arch-desc">Complete recommendation with ASCII pipeline diagram — from ingestion to generation, every component named</div>
+          <div class="arch-label">Persist &amp; Refine</div>
+          <div class="arch-desc">Every session persists to SQLite. Refine against new constraints, track refinement history, generate implementation bundles when ready</div>
         </div>
       </div>
     </div>
@@ -306,33 +309,33 @@
     <div class="container">
       <div class="section-header reveal">
         <div class="section-tag">Features</div>
-        <h2 class="section-title">One answer.<br>Full reasoning.</h2>
-        <p class="section-sub">Opinionated by design. Every recommendation is specific enough to act on immediately.</p>
+        <h2 class="section-title">Six modes.<br>One tool.</h2>
+        <p class="section-sub">From blank-slate architecture to debugging a production system — all from the same CLI and API.</p>
       </div>
       <div class="features-grid">
         <div class="feat-card reveal">
-          <div class="feat-title">Opinionated Recommendations</div>
-          <div class="feat-desc">One primary choice per component — no "it depends" hedging. If Weaviate is right for your constraints, it says Weaviate and explains exactly why. The output is a decision, not a comparison table.</div>
+          <div class="feat-title">Architecture Recommendation</div>
+          <div class="feat-desc">One primary choice per component — no "it depends." Weaviate or Pinecone. BM25 or dense. If GDPR applies, managed cloud options are eliminated before Claude is even called. The output is a decision, not a comparison table.</div>
         </div>
         <div class="feat-card reveal">
-          <div class="feat-title">Compliance-Aware</div>
-          <div class="feat-desc">GDPR and self-hosting requirements automatically eliminate managed cloud options from consideration. Weaviate and Qdrant surface over Pinecone without the user needing to know the tradeoff existed.</div>
+          <div class="feat-title">Architecture Diagnosis</div>
+          <div class="feat-desc">Describe your existing broken stack and the problems you're seeing. Get a root-cause analysis per component with severity levels and one specific, actionable fix — not "improve your chunking" but a named strategy with exact parameters.</div>
         </div>
         <div class="feat-card reveal">
-          <div class="feat-title">Complexity Scoring</div>
-          <div class="feat-desc">Rule-based pre-scorer calibrates recommendations to team capacity. A 50,000-document legal corpus with daily updates is scored differently from a 500-document FAQ — recommendations scale accordingly.</div>
+          <div class="feat-title">Multi-Use-Case Session</div>
+          <div class="feat-desc">Run up to 5 parallel audits in a single request. Get cross-cutting insights: which components can be shared across use cases, where requirements conflict, and which use case to build first for the highest return.</div>
         </div>
         <div class="feat-card reveal">
-          <div class="feat-title">Interactive CLI</div>
-          <div class="feat-desc">7-question guided mode designed for conversations — no JSON file required. Non-technical stakeholders can complete the audit without engineering support.</div>
+          <div class="feat-title">Implementation Bundle</div>
+          <div class="feat-desc">Generate a complete requirements.txt, docker-compose.yml, .env.example, and migration guide from any architecture recommendation. If you have an existing stack, get ordered migration steps with rollback notes.</div>
         </div>
         <div class="feat-card reveal">
-          <div class="feat-title">ASCII Pipeline Diagram</div>
-          <div class="feat-desc">Every output includes a text-based pipeline from ingestion to generation — paste it into a Notion doc, a design doc, or a Slack message without needing a diagramming tool.</div>
+          <div class="feat-title">Cost Estimation</div>
+          <div class="feat-desc">Rule-based monthly cost breakdown per component — no LLM call needed. Lookup tables for vector DB tiers, embedding API pricing, reranker inference, and LLM costs. Includes optimization tips and a hosting model classification.</div>
         </div>
         <div class="feat-card reveal">
-          <div class="feat-title">Transparent Decision Rules</div>
-          <div class="feat-desc">The /decision-rules API endpoint exposes every heuristic the tool uses. No black box — teams can audit, override, or extend the logic for their own domain.</div>
+          <div class="feat-title">Eval Dataset Generation</div>
+          <div class="feat-desc">Generate RAGAS-ready evaluation questions grounded in the actual use case and query patterns — not generic retrieval questions. Easy/medium/hard distribution, RAGAS metric mapping, annotation guide, and time estimate included.</div>
         </div>
       </div>
     </div>
@@ -352,17 +355,26 @@
         <pre><span class="kw">git</span> clone https://github.com/swapnanil/rag-readiness
 <span class="kw">cd</span> rag-readiness
 <span class="kw">cp</span> .env.example .env   <span class="cmt"># add your ANTHROPIC_API_KEY</span>
-docker-compose up api</pre>
+docker-compose up api
+<span class="cmt"># or: pip install -r requirements.txt && python api.py</span></pre>
       </div>
       <div class="qs-gap reveal">
-        <div class="qs-label">CLI — interactive guided audit</div>
-        <pre>docker-compose run --rm -it cli audit --interactive</pre>
+        <div class="qs-label">New architecture audit</div>
+        <pre>python main.py audit --interactive
+python main.py audit --file examples/usecase_legal_contracts.json --with-cost</pre>
       </div>
       <div class="qs-gap reveal">
-        <div class="qs-label">CLI — audit from JSON file</div>
-        <pre>docker-compose run cli audit \
-  --file examples/legal_contracts_use_case.json \
-  --format markdown</pre>
+        <div class="qs-label">Diagnose existing broken stack</div>
+        <pre>python main.py diagnose --interactive
+python main.py diagnose --file examples/diagnosis_pinecone_fixed.json</pre>
+      </div>
+      <div class="qs-gap reveal">
+        <div class="qs-label">Multi-use-case session + refinement</div>
+        <pre>python main.py multi-audit examples/multi_usecase_lexvault.json
+python main.py sessions
+python main.py refine &lt;session-id&gt; --feedback "Qdrant was too heavy"
+python main.py cost &lt;session-id&gt;
+python main.py eval-dataset &lt;session-id&gt; --num-questions 20</pre>
       </div>
     </div>
   </section>
@@ -374,43 +386,45 @@ docker-compose up api</pre>
     <div class="container">
       <div class="section-header reveal">
         <div class="section-tag">Example</div>
-        <h2 class="section-title">Constraints in.<br>Architecture out.</h2>
+        <h2 class="section-title">Broken stack in.<br>Root causes out.</h2>
       </div>
       <div class="example-grid">
         <div class="reveal">
-          <div class="ex-label">Input — <span>use case JSON</span></div>
+          <div class="ex-label">Input — <span>diagnosis request</span></div>
           <div class="terminal">
             <pre style="font-size: 11px; line-height: 1.75; white-space: pre-wrap;"><span class="t-muted">{</span>
-  <span class="t-key">"data_types"</span><span class="t-muted">:</span> <span class="t-str">["PDF"]</span><span class="t-muted">,</span>
-  <span class="t-key">"data_volume"</span><span class="t-muted">:</span>
-    <span class="t-str">"50k legal contracts
-     avg 40 pages"</span><span class="t-muted">,</span>
-  <span class="t-key">"compliance"</span><span class="t-muted">:</span> <span class="t-str">["GDPR"]</span><span class="t-muted">,</span>
-  <span class="t-key">"self_hosting"</span><span class="t-muted">:</span> <span class="t-str">true</span><span class="t-muted">,</span>
-  <span class="t-key">"team_ml_exp"</span><span class="t-muted">:</span>
-    <span class="t-str">"advanced"</span>
+  <span class="t-key">"existing_architecture"</span><span class="t-muted">: {</span>
+    <span class="t-key">"vector_database"</span><span class="t-muted">:</span> <span class="t-str">"Pinecone"</span><span class="t-muted">,</span>
+    <span class="t-key">"chunking_strategy"</span><span class="t-muted">:</span>
+      <span class="t-str">"512-token fixed"</span><span class="t-muted">,</span>
+    <span class="t-key">"embedding_model"</span><span class="t-muted">:</span> <span class="t-str">"ada-002"</span><span class="t-muted">,</span>
+    <span class="t-key">"retrieval_method"</span><span class="t-muted">:</span> <span class="t-str">"dense"</span><span class="t-muted">,</span>
+    <span class="t-key">"observed_problems"</span><span class="t-muted">: [</span>
+      <span class="t-str">"misses clause references"</span><span class="t-muted">,</span>
+      <span class="t-str">"hallucinates terms"</span>
+    <span class="t-muted">]</span>
+  <span class="t-muted">}</span>
 <span class="t-muted">}</span></pre>
           </div>
         </div>
         <div class="reveal">
-          <div class="ex-label">Output — <span>recommendation excerpt</span></div>
+          <div class="ex-label">Output — <span>diagnosis result</span></div>
           <div class="terminal">
-            <pre style="font-size: 11.5px; line-height: 1.7;"><span class="t-key">complexity</span><span class="t-muted">:</span>       <span class="t-str">complex</span>
-<span class="t-key">complexity_score</span><span class="t-muted">:</span> <span class="t-val">8 / 10</span>
+            <pre style="font-size: 11.5px; line-height: 1.7;"><span class="t-key">overall_severity</span><span class="t-muted">:</span> <span class="t-sev">critical</span>
 
-<span class="t-head">vector_database</span>
-<span class="t-str">"Weaviate self-hosted"</span>
-<span class="t-dim">GDPR + self-hosting rules out</span>
-<span class="t-dim">all managed options</span>
+<span class="t-head">chunking_strategy</span> <span class="t-sev">critical</span>
+<span class="t-dim">Fixed chunks split mid-clause in</span>
+<span class="t-dim">long legal documents</span>
+<span class="t-str">Fix: parent-child hierarchical</span>
+<span class="t-str">chunking, 512-token child nodes</span>
 
-<span class="t-head">retrieval_method</span>
-<span class="t-str">"Hybrid BM25 + dense + RRF"</span>
-<span class="t-dim">legal queries mix exact clause</span>
-<span class="t-dim">keywords with semantic intent</span>
+<span class="t-head">retrieval_method</span> <span class="t-sev">high</span>
+<span class="t-dim">Dense-only misses exact terms like</span>
+<span class="t-dim">dollar amounts in clauses</span>
+<span class="t-str">Fix: hybrid BM25+dense + RRF</span>
 
-<span class="t-head">Pipeline</span>
-<span class="t-muted">PDF→chunk→embed→Weaviate</span>
-<span class="t-muted">→hybrid→rerank→Claude</span></pre>
+<span class="t-key">quick_fix</span><span class="t-muted">:</span>
+<span class="t-dim">Enable 10% token overlap today</span></pre>
           </div>
         </div>
       </div>
@@ -454,7 +468,7 @@ docker-compose up api</pre>
 
   <footer>
     <div class="footer-left">© 2026 Swapnanil Saha · swapnanilsaha.com</div>
-    <div class="footer-right">Part of the <span>llm-tools</span> suite</div>
+    <div class="footer-right">Part of the <span>llm-tools</span> suite · v2.0</div>
   </footer>
 
   <script>
