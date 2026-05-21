@@ -261,7 +261,7 @@
           <p class="problem-statement">Every RAG architecture blog post ends with "it depends." Teams spend weeks evaluating options with no framework, ship the wrong choices, then discover root causes six months later — after ingesting 50,000 documents, signing a cloud contract that violates GDPR, and watching precision tank on exact-term queries.</p>
         </div>
         <div class="problem-right">
-          <p class="problem-solution">RAG Readiness pre-scores complexity from rules, then Claude returns one specific recommendation per component. If you already have a stack, diagnose it — root causes ordered by severity, one concrete fix each. If you need to iterate, every session persists so you can refine against new constraints. Cost estimation, eval dataset generation, and implementation bundles included.</p>
+          <p class="problem-solution">RAG Readiness pre-scores complexity from rules, then the LLM returns one specific recommendation per component. If you already have a stack, diagnose it — root causes ordered by severity, one concrete fix each. If you need to iterate, every session persists so you can refine against new constraints. Cost estimation, eval dataset generation, and implementation bundles included.</p>
         </div>
       </div>
     </div>
@@ -274,7 +274,7 @@
     <div class="container">
       <div class="section-header reveal">
         <div class="section-tag">Architecture</div>
-        <h2 class="section-title">Rules first.<br>Then Claude.</h2>
+        <h2 class="section-title">Rules first.<br>Then the LLM.</h2>
         <p class="section-sub">Complexity scoring before the LLM call means recommendations are calibrated to your actual constraints, not generic best practices.</p>
       </div>
       <div class="arch-row">
@@ -291,7 +291,7 @@
         <div class="arch-step reveal">
           <div class="arch-num"><div class="arch-dot"></div>03</div>
           <div class="arch-label">Recommend</div>
-          <div class="arch-desc">Claude returns one specific choice per component with full reasoning — plus diagnosis severity, cost estimate, or eval questions depending on mode</div>
+          <div class="arch-desc">Returns one specific choice per component with full reasoning — plus diagnosis severity, cost estimate, or eval questions depending on mode</div>
         </div>
         <div class="arch-step reveal">
           <div class="arch-num"><div class="arch-dot"></div>04</div>
@@ -315,7 +315,7 @@
       <div class="features-grid">
         <div class="feat-card reveal">
           <div class="feat-title">Architecture Recommendation</div>
-          <div class="feat-desc">One primary choice per component — no "it depends." Weaviate or Pinecone. BM25 or dense. If GDPR applies, managed cloud options are eliminated before Claude is even called. The output is a decision, not a comparison table.</div>
+          <div class="feat-desc">One primary choice per component — no "it depends." Weaviate or Pinecone. BM25 or dense. If GDPR applies, managed cloud options are eliminated before the LLM is even called. The output is a decision, not a comparison table.</div>
         </div>
         <div class="feat-card reveal">
           <div class="feat-title">Architecture Diagnosis</div>
@@ -439,7 +439,7 @@ python main.py eval-dataset &lt;session-id&gt; --num-questions 20</pre>
       <div class="section-header reveal">
         <div class="section-tag">Suite</div>
         <h2 class="section-title">Six more tools.<br>Same standard.</h2>
-        <p class="section-sub">Each tool is a standalone CLI + REST API solving a real enterprise problem with Claude.</p>
+        <p class="section-sub">Each tool is a standalone CLI + REST API solving a real enterprise problem with LLM APIs.</p>
       </div>
       <div class="suite-grid">
         <a href="https://swapnanil.github.io/ad-copy-critic/" target="_blank" class="suite-card reveal">
